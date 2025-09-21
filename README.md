@@ -1,6 +1,13 @@
 # GARAGE
 ## A Graph Attentive GAN for Rare Cell Aware single cell RNA-seq Data Generation
 
+A python pipeline for synthetic single cell (scRNA-seq) data generation using graph attention-based GAN approach.
+
+## 🔗 Related Links :
+**Docs :** [GARAGE Documentation ☑️](https://garage-docs.readthedocs.io/en/latest/) 
+
+---
+
 <p align="center">
   <img src="img/github_title_garage.png" alt="GARAGE" width="680"/>
 <!--   <h1 align="center">GARAGE</h1> -->
@@ -153,8 +160,27 @@ pip install -r requirements_benchmarking.txt
 
 ---
 
+## ⚙️ Usage: The GARAGE Pipeline
 
+To generate and validate your own synthetic single-cell data, the below steps need to be followed :
 
+- Prepare Your Data 📁
+- Run GARAGE 🧠
+- Validate the Generated Data 📊
+
+🍁 We have a dedicated documentation for GARAGE at - [GARAGE Documentation ☑️](https://garage-docs.readthedocs.io/en/latest/) 
+
+## 📜 Citation
+
+If you use **GARAGE** in your research, please cite our paper:
+
+```bibtex
+  TO BE ADDED SOON
+```
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 
 
