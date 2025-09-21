@@ -3,7 +3,7 @@
 
 <p align="center">
   <img src="img/github_title_garage.png" alt="GARAGE" width="680"/>
-  <h1 align="center">GARAGE</h1>
+<!--   <h1 align="center">GARAGE</h1> -->
 </p>
 
 <p align="center">
