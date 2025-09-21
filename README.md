@@ -32,6 +32,7 @@
   <img alt="Linting" src="https://img.shields.io/badge/Linting-flake8%20black%20mypy-yellow"/>
 </p>
 
+---
 
 # GARAGE - A Graph Attentive GAN for Rare Cell Aware single cell RNA-seq Data Generation
 
@@ -39,12 +40,6 @@ A python pipeline for synthetic single cell (scRNA-seq) data generation using gr
 
 ## 🔗 Related Links :
 **Docs :** [GARAGE Documentation ☑️](https://garage-docs.readthedocs.io/en/latest/) 
-
----
-
-
-
-
 
 ---
 
