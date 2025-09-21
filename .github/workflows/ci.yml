@@ -83,30 +83,30 @@ jobs:
       - name: Install project (dev)
         run: poetry install --with dev
 
-      - name: Run tests (make)
-        # Keep your existing make test which might run pytest with coverage
-        run: make test
+      # Run tests with pytest and produce coverage.xml for Codecov
+      - name: Run tests with coverage (pytest)
+        run: |
+          # If pytest/pytest-cov are not installed as dev-dependencies, this ensures they exist in the venv
+          poetry run pip install pytest pytest-cov
 
-      # -------------------------
-      # Codecov upload (Linux)
-      # -------------------------
-      # This uploads coverage.xml (if produced). For public repos no token is required.
-      # If your make test does not produce coverage.xml, replace the "Run tests (make)" step
-      # with the pytest command shown below (commented out).
+          # Run pytest and write coverage.xml
+          # Replace `garage` with your package directory name if different
+          poetry run pytest --maxfail=1 --disable-warnings --cov=garage --cov-branch --cov-report=xml
+
+      - name: Show coverage file (for debugging)
+        run: |
+          echo "Repository root files:"
+          ls -la
+          echo "Does coverage.xml exist?"
+          if [ -f coverage.xml ]; then echo "YES - coverage.xml present"; else echo "NO - coverage.xml missing"; fi
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           files: coverage.xml
           fail_ci_if_error: true
           verbose: true
-          # token: ${{ secrets.CODECOV_TOKEN }}  # uncomment if repo is private and you created a CODECOV_TOKEN secret
-
-      # ---- Alternative (uncomment this and comment the "Run tests (make)" step) ----
-      # - name: Run pytest with coverage (alternative)
-      #   run: |
-      #     pip install pytest pytest-cov
-      #     # Replace `garage` below with your package/module directory name
-      #     pytest --maxfail=1 --disable-warnings --cov=garage --cov-report=xml
+          # token: ${{ secrets.CODECOV_TOKEN }}  # uncomment and set secret for private repos
 
   tests_mac:
     needs: linter
