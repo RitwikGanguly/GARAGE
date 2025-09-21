@@ -2,7 +2,7 @@
 **A Graph Attentive GAN for Rare Cell Aware single cell RNA-seq Data Generation**
 
 <p align="center">
-  <img src="img/garage_workflow.jpg" alt="GARAGE" width="680"/>
+  <img src="img/github_title_garage.png" alt="GARAGE" width="680"/>
   <h1 align="center">GARAGE</h1>
 </p>
 
