@@ -1,5 +1,5 @@
 # GARAGE
-**A Graph Attentive GAN for Rare Cell Aware single cell RNA-seq Data Generation**
+## A Graph Attentive GAN for Rare Cell Aware single cell RNA-seq Data Generation
 
 <p align="center">
   <img src="img/github_title_garage.png" alt="GARAGE" width="680"/>
@@ -36,6 +36,10 @@
 </p>
 
 ---
+
+**GARAGE** (**G**raph-**A**ttentive **RA**re-cell aware single-cell data **GE**neration) is a novel deep learning framework for generating high-fidelity synthetic single-cell RNA-seq (scRNA-seq) data.
+
+Traditional Generative Adversarial Networks (GANs) often struggle with the high-dimensional and sparse nature of scRNA-seq data, leading to training instability, mode collapse, and a critical failure to reproduce rare but biologically important cell populations.
 
 
 
