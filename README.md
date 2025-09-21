@@ -16,11 +16,6 @@
   <img alt="Python" src="https://img.shields.io/badge/python-3.12.5-blue"/>
   </a>
   
-  <!-- Codecov Coverage -->
-  <a href="https://codecov.io/gh/RitwikGanguly/GARAGE">
-    <img alt="codecov" src="https://codecov.io/gh/RitwikGanguly/GARAGE/branch/main/graph/badge.svg?token=YOUR_CODECOV_TOKEN"/>
-  </a>
-  
   <!-- License -->
   <a href="https://github.com/RitwikGanguly/GARAGE/blob/main/LICENSE">
     <img alt="License" src="https://img.shields.io/github/license/RitwikGanguly/GARAGE"/>
@@ -32,8 +27,8 @@
   </a>
   
   <!-- Gitter / Community Chat -->
-  <a href="https://gitter.im/your-room">
-    <img alt="Gitter" src="https://badges.gitter.im/your-room.svg"/>
+  <a href="https://app.gitter.im/#/room/!FIUyTpwDzJtqorWCMm:gitter.im">
+    <img alt="Gitter" src="https://badges.gitter.im/garage/garage.svg"/>
   </a>
 </p>
 
