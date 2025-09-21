@@ -170,6 +170,7 @@ To generate and validate your own synthetic single-cell data, the below steps ne
 - Validate the Generated Data 📊
 
 🍁 We have a dedicated documentation for GARAGE at - [GARAGE Documentation ☑️](https://garage-docs.readthedocs.io/en/latest/) 
+
 🙋‍♂️ CALM DOWN❗Have a SEE 👀
 
 ## 📜 Citation
