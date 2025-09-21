@@ -7,24 +7,21 @@
 </p>
 
 <p align="center">
-  <!-- CI Status -->
-  <a href="https://github.com/RitwikGanguly/GARAGE/actions/workflows/ci.yml">
-    <img alt="CI" src="https://github.com/RitwikGanguly/GARAGE/actions/workflows/ci.yml/badge.svg"/>
-  </a>
 
   <a href="https://www.python.org/downloads/release/python-3125/">
   <img alt="Python" src="https://img.shields.io/badge/python-3.12.5-blue"/>
   </a>
-  
+
+  <!-- Documentation (if enabled) -->
+  <a href="https://garage-docs.readthedocs.io/en/latest/">
+    <img alt="Documentation Status" src="https://readthedocs.org/projects/garage/badge/?version=latest"/>
+  </a>
+
   <!-- License -->
   <a href="https://github.com/RitwikGanguly/GARAGE/blob/main/LICENSE">
     <img alt="License" src="https://img.shields.io/github/license/RitwikGanguly/GARAGE"/>
   </a>
   
-  <!-- Documentation (if enabled) -->
-  <a href="https://your-docs-url">
-    <img alt="Documentation Status" src="https://readthedocs.org/projects/garage/badge/?version=latest"/>
-  </a>
   
   <!-- Gitter / Community Chat -->
   <a href="https://app.gitter.im/#/room/!FIUyTpwDzJtqorWCMm:gitter.im">
@@ -39,4 +36,6 @@
 </p>
 
 ---
+
+
 
