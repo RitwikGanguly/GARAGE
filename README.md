@@ -3,17 +3,6 @@
 <!--   <h1 align="center">GARAGE</h1> -->
 </p>
 
-# GARAGE - A Graph Attentive GAN for Rare Cell Aware single cell RNA-seq Data Generation
-
-A python pipeline for synthetic single cell (scRNA-seq) data generation using graph attention-based GAN approach.
-
-## 🔗 Related Links :
-**Docs :** [GARAGE Documentation ☑️](https://garage-docs.readthedocs.io/en/latest/) 
-
----
-
-
-
 <p align="center">
 
   <a href="https://www.python.org/downloads/release/python-3125/">
@@ -42,6 +31,20 @@ A python pipeline for synthetic single cell (scRNA-seq) data generation using gr
   <img alt="Docs" src="https://img.shields.io/badge/Docs-Mkdocs-red"/>
   <img alt="Linting" src="https://img.shields.io/badge/Linting-flake8%20black%20mypy-yellow"/>
 </p>
+
+
+# GARAGE - A Graph Attentive GAN for Rare Cell Aware single cell RNA-seq Data Generation
+
+A python pipeline for synthetic single cell (scRNA-seq) data generation using graph attention-based GAN approach.
+
+## 🔗 Related Links :
+**Docs :** [GARAGE Documentation ☑️](https://garage-docs.readthedocs.io/en/latest/) 
+
+---
+
+
+
+
 
 ---
 
