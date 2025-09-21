@@ -1,0 +1,181 @@
+name: Continuous Integration
+
+# Controls when the workflow will run
+on:
+  push:
+    tags:
+      - 'test*'
+  workflow_dispatch:
+
+jobs:
+  linter:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12']
+        poetry-version: ['1.7.1']
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install R (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libtirpc-dev libcurl4-openssl-dev libssl-dev libxml2-dev libbz2-dev liblzma-dev
+          sudo apt-get install -y r-base
+
+      - name: Install R (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install r
+
+      - name: Install R (Windows)
+        if: runner.os == 'Windows'
+        run: choco install r.project -y
+
+      - name: Setup Poetry
+        uses: abatilo/actions-poetry@v2.1.6
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+
+      - name: Install project (dev)
+        run: poetry install --with dev
+
+      - name: Run linter
+        run: make lint
+
+  tests_linux:
+    needs: linter
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12']
+        poetry-version: ['1.7.1']
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install R (Linux)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libtirpc-dev libcurl4-openssl-dev libssl-dev libxml2-dev libbz2-dev liblzma-dev
+          sudo apt-get install -y r-base
+
+      - name: Setup Poetry
+        uses: abatilo/actions-poetry@v2.1.6
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+
+      - name: Install project (dev)
+        run: poetry install --with dev
+
+      - name: Run tests (make)
+        # Keep your existing make test which might run pytest with coverage
+        run: make test
+
+      # -------------------------
+      # Codecov upload (Linux)
+      # -------------------------
+      # This uploads coverage.xml (if produced). For public repos no token is required.
+      # If your make test does not produce coverage.xml, replace the "Run tests (make)" step
+      # with the pytest command shown below (commented out).
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.xml
+          fail_ci_if_error: true
+          verbose: true
+          # token: ${{ secrets.CODECOV_TOKEN }}  # uncomment if repo is private and you created a CODECOV_TOKEN secret
+
+      # ---- Alternative (uncomment this and comment the "Run tests (make)" step) ----
+      # - name: Run pytest with coverage (alternative)
+      #   run: |
+      #     pip install pytest pytest-cov
+      #     # Replace `garage` below with your package/module directory name
+      #     pytest --maxfail=1 --disable-warnings --cov=garage --cov-report=xml
+
+  tests_mac:
+    needs: linter
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12']
+        poetry-version: ['1.7.1']
+        os: [macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install R (macOS)
+        run: |
+          brew update
+          brew install r
+
+      - name: Setup Poetry
+        uses: abatilo/actions-poetry@v2.1.6
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+
+      - name: Install project (dev)
+        run: poetry install --with dev
+
+      - name: Run tests
+        run: make test
+
+  tests_windows:
+    needs: linter
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.12" ]
+        poetry-version: [ "1.7.1" ]
+        os: [windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install R on Windows 
+        run: choco install r.project -y
+
+      - name: Setup Poetry
+        uses: abatilo/actions-poetry@v2.1.6
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
+
+      - name: Install project (dev)
+        run: poetry install --with dev
+
+      - name: Run tests
+        run: make test
