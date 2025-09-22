@@ -65,7 +65,7 @@ The GARAGE framework uses a two-stage process to generate realistic synthetic ce
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
 *   **GAT-Informed Seeding:** Moves beyond random sampling to intelligently select the most representative cells to guide generation.
 *   **Enhanced Rare Cell Generation:** The framework is explicitly designed to better capture and generate samples for rare and underrepresented cell populations.
@@ -74,7 +74,7 @@ The GARAGE framework uses a two-stage process to generate realistic synthetic ce
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 ├── .github/workflows/       # CI/CD workflows (e.g., for ReadTheDocs)
@@ -102,7 +102,7 @@ The GARAGE framework uses a two-stage process to generate realistic synthetic ce
 ---
 
 
-## 📜 Citation
+## Citation
 
 If you use **GARAGE** in your research, please cite our paper:
 
@@ -110,7 +110,7 @@ If you use **GARAGE** in your research, please cite our paper:
   TO BE ADDED SOON
 ```
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
