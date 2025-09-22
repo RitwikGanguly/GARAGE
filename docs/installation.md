@@ -1,4 +1,4 @@
-## Installation
+# Installation
 
 **GARAGE** is a two-staged python pipeline that used the Graph Attention (GAT) and GAN to generate synthetic scRNA-seq data.
 
