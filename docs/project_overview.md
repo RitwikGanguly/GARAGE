@@ -1,4 +1,4 @@
-# Theoretical Background
+# Project Overview
 
 ## Project Title
 **Synthetic Cell Sample Generation using Graph Attention-based Generative Adversarial Network**
