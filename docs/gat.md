@@ -73,9 +73,10 @@ Graph Convolutional Networks (GCNs) and Graph Attention Networks (GATs) are both
 5. **Scalability**:
    - GATs can be more computationally intensive than GCNs because computing attention coefficients for each edge adds overhead. However, the attention mechanism can also lead to more efficient and focused aggregations, potentially improving performance on certain tasks.
 
-in summary - 
+**In summary:
 - **GCNs** rely on fixed aggregation weights based on the graph structure and degree normalization, making them simpler and potentially more scalable for certain types of graphs.
-- **GATs** use an attention mechanism to dynamically assign weights to neighbors, allowing for more expressive and potentially more powerful modeling of graph data at the cost of increased computational complexity and less interpretability.
+- **GATs** use an attention mechanism to dynamically assign weights to neighbors, allowing for more expressive and potentially more powerful modeling of graph data at the cost of increased computational complexity and less interpretability.**
+
 
 Each architecture has its strengths and is suited to different types of graph-related problems. GCNs are often preferred for their simplicity and efficiency, while GATs are chosen for their flexibility and ability to capture complex relationships in the data.
 
