@@ -38,7 +38,7 @@ html_static_path = ['_static']
 # html_logo = '_static/logo.png'  # put your logo here, optional
 html_theme_options = {
     'display_version': True,     # Show version next to project name
-    'collapse_navigation': False # Expand sidebar by default
+    'collapse_navigation': False, # Expand sidebar by default
 
     # GitHub options:
     'github_url': 'https://github.com/RitwikGanguly/GARAGE',    
