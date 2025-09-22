@@ -11,7 +11,7 @@ copyright = '2025, GARAGE'
 extensions = [
     'sphinx.ext.autodoc',         # Document code from docstrings
     'sphinx.ext.napoleon',        # Google and NumPy docstring support
-    'sphinx.ext.viewcode',        # Add links to source code
+    #'sphinx.ext.viewcode',        # Add links to source code
     'sphinx.ext.todo',            # Highlight TODOs in docs
     'myst_parser',                # Markdown support (optional but recommended)
     'sphinx.ext.githubpages',
