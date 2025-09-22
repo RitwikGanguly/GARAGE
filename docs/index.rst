@@ -52,3 +52,9 @@ Overview
 
    summary
    installation
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Theoretical Background
+
+   theoretical_background
