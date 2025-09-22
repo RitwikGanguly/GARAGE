@@ -48,7 +48,7 @@ Graph Convolutional Networks (GCNs) and Graph Attention Networks (GATs) are both
 3. **Formulation**:
    The typical formulation of a GCN layer can be expressed as:
 
-    ![image1](assets/images/GCN_Eq.png)
+    ![GCN Equation](https://raw.githubusercontent.com/RitwikGanguly/GARAGE/361dbcffe2dfd8284e88e6bfa476e5618d5adcb3/docs/images/GCN_Eq.png)
    
 4. **Interpretability**:
    - GCNs are relatively easier to interpret compared to GATs because the aggregation mechanism is straightforward and deterministic.
