@@ -14,6 +14,7 @@ extensions = [
     'sphinx.ext.viewcode',        # Add links to source code
     'sphinx.ext.todo',            # Highlight TODOs in docs
     'myst_parser',                # Markdown support (optional but recommended)
+    'sphinx.ext.githubpages',
 ]
 
 templates_path = ['_templates']
@@ -38,6 +39,17 @@ html_static_path = ['_static']
 html_theme_options = {
     'display_version': True,     # Show version next to project name
     'collapse_navigation': False # Expand sidebar by default
+
+    # GitHub options:
+    'github_url': 'https://github.com/RitwikGanguly/GARAGE',    
+    'use_edit_page_button': True,
+}
+
+html_context = {
+    'github_user': 'RitwikGanguly',
+    'github_repo': 'GARAGE',
+    'github_version': 'main',                      # Branch name, e.g., 'main' or 'master'
+    'doc_path': 'docs',                            # Path to your docs directory in the repo
 }
 
 # -- Extra: Support for code highlighting ------------------------------------
