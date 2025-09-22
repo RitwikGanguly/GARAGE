@@ -37,7 +37,6 @@ html_static_path = ['_static']
 # Optional sidebar/logo settings for sphinx_rtd_theme
 # html_logo = '_static/logo.png'  # put your logo here, optional
 html_theme_options = {
-    'logo_only': True,           # Show logo only
     'display_version': True,     # Show version next to project name
     'collapse_navigation': False # Expand sidebar by default
 }
