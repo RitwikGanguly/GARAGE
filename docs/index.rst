@@ -61,3 +61,9 @@ Overview
    singlecell
    gan
    gat
+   ari
+   wasserstein
+   umap
+   feature
+   pca
+   leiden
