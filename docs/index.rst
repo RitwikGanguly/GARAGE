@@ -2,7 +2,6 @@
 Overview
 ========
 
-
 .. raw:: html
 
    <p align="center">
