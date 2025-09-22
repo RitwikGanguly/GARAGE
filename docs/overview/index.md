@@ -1,7 +1,7 @@
 
 ```{toctree}
 :maxdepth: 1
-:caption: Summary Sections
+:caption: Overview
 
 intro
 installation
