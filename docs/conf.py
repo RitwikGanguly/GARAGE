@@ -3,9 +3,8 @@
 
 # -- Project information -----------------------------------------------------
 project = 'GARAGE'
-author = 'GARAGE Developers'
+author = 'Ritwik Ganguly'
 copyright = '2025, GARAGE'
-release = '0.1'
 
 # -- General configuration ---------------------------------------------------
 # Sphinx core extensions -- you can add/remove as needed
