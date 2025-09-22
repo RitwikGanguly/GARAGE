@@ -35,3 +35,9 @@ Data science is an interdisciplinary field focused on extracting knowledge and i
 6. **Innovation in Computational Tools**: The development of new computational tools and algorithms in data science directly contributes to advancements in bioinformatics, enhancing the ability to analyze and interpret biological data.
 
 > **In summary, bioinformatics and data science are deeply interconnected, with data science providing the methodologies and computational power necessary to analyze and interpret the vast and complex datasets inherent to bioinformatics. This synergy enables significant advancements in understanding biological processes and improving health outcomes.**
+
+<div align="center">
+    <img src="https://research.binus.ac.id/bdsrc/wp-content/uploads/sites/5/2022/10/Gambar-1-480x479.png" height="300" alt="Ritwik" width="225">
+</div>
+
+<p align="center"><small>Image source: <a href="https://research.binus.ac.id/bdsrc/wp-content/uploads/sites/5/2022/10/Gambar-1.png">Binus Research</a></small></p>
