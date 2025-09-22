@@ -5,9 +5,9 @@
 
 **Generator generates counterfeit currency. Discriminators are a team of cops trying to detect the counterfeit currency. Counterfeiters and cops both are trying to beat each other at their game.**
 
-![GAN Image](https://miro.medium.com/v2/resize:fit:828/format:webp/1*t78gwhhw-hn1CgXc1K89wA.png)
+![GAN Image](https://miro.medium.com/v2/resize:fit:1200/1*t78gwhhw-hn1CgXc1K89wA.png)
 
-<p align="center"><small>Image source: <a href="https://medium.com/@medium/your-article-link">Medium</a></small></p>
+<p align="center"><small>Image source: <a href=["https://medium.datadriveninvestor.com/generative-adversarial-network-gan-using-keras-ce1c05cfdfd3">Medium</a></small></p>
 
 Generator’s objective will be to generate data that is very similar to the training data. Data generated from Generator should be indistinguishable from the real data.
 
