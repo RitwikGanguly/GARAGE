@@ -65,7 +65,8 @@ Graph Convolutional Networks (GCNs) and Graph Attention Networks (GATs) are both
    
 3. **Formulation**:
    - The typical formulation of a GAT layer involves computing attention coefficients \(\alpha_{ij}\) for each edge, and then aggregating the neighbor features weighted by these coefficients:
-     ![image2](assets/images/GAT_eq.png)
+     ![GAT Equation](https://raw.githubusercontent.com/RitwikGanguly/GARAGE/51f62f6c71f43925c597955be3c2a7f87c433e54/docs/images/GAT_eq.png)
+
    
 4. **Interpretability**:
    - GATs are less interpretable due to the dynamic and learned nature of the attention weights, making it harder to understand the exact influence of each neighbor.
