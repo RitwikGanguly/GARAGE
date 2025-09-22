@@ -7,3 +7,4 @@ GARAGE Documentation
    :caption: Contents
 
    overview/index
+   theoretical_background/index
