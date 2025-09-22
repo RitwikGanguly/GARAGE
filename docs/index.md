@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/github_title_garage.png" alt="GARAGE" width="680"/>
+  <img src="docs/images/github_title_garage.png" alt="GARAGE" width="680"/>
 <!--   <h1 align="center">GARAGE</h1> -->
 </p>
 
@@ -52,7 +52,7 @@ Traditional Generative Adversarial Networks (GANs) often struggle with the high-
 The GARAGE framework uses a two-stage process to generate realistic synthetic cells, with a special focus on preserving rare cell types.
 
 <p align="center">
-  <img src="images/garage_workflow.jpg" alt="GARAGE" width="680"/>
+  <img src="docs/images/garage_workflow.jpg" alt="GARAGE" width="680"/>
 </p>
 
 *A high-level overview of the GARAGE framework.*
