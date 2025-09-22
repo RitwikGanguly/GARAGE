@@ -6,5 +6,4 @@ GARAGE Documentation
    :maxdepth: 2
    :caption: Contents
 
-   index
-   installation
+   overview/index
