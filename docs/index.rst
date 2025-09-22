@@ -56,4 +56,4 @@ Overview
    :maxdepth: 2
    :caption: Theoretical Background
 
-   theoretical_background
+   project_overview
