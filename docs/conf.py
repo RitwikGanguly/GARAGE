@@ -43,7 +43,7 @@ html_theme_options = {
 
     # GitHub options
     'github_url': 'https://github.com/RitwikGanguly/GARAGE',
-    'use_edit_page_button': True,  # Shows "Edit on GitHub" instead of "View page source"
+    'use_edit_page_button': True,  # Shows "Edit on GitHub" button
 }
 
 html_context = {
@@ -52,6 +52,9 @@ html_context = {
     'github_version': 'main',      # Branch name, e.g., 'main' or 'master'
     'doc_path': 'docs',            # Path to your docs directory in the repo
 }
+
+# -- Remove "View page source" button ---------------------------------------
+html_show_sourcelink = False      # This disables the top-right "View page source" button
 
 # -- Extra: Support for code highlighting ------------------------------------
 pygments_style = 'sphinx'        # Syntax highlighting for code blocks
