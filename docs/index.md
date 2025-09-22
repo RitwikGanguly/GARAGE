@@ -34,7 +34,7 @@
 
 ---
 
-# GARAGE - A Graph Attentive GAN for Rare Cell Aware single cell RNA-seq Data Generation
+# Summary
 
 A python pipeline for synthetic single cell (scRNA-seq) data generation using graph attention-based GAN approach.
 
