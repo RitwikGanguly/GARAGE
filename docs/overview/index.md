@@ -3,7 +3,7 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/RitwikGanguly/GARAGE/refs/heads/main/docs/images/github_title_garage.png" alt="GARAGE" width="680"/>
   <h1 align="center">GARAGE</h1>
-  <h3 align="center">A python pipeline for synthetic single cell (scRNA-seq) data generation using graph attention-based GAN approach.</h3>h3>
+  <h3 align="center">A python pipeline for synthetic single cell (scRNA-seq) data generation using graph attention-based GAN approach.</h3>
 </p>
 
 <p align="center">
