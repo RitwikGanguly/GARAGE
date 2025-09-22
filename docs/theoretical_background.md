@@ -1,8 +1,7 @@
+--
 #Summary
-
 --
 ## Project Title: Synthetic Cell sample generation using Graph Attention based Generative Adversarial Network
----
 
 ## Project Description: 
 In this work, we aim to enhance the efficiency and utility of single-cell RNA sequencing data by employing a two-step process. 
