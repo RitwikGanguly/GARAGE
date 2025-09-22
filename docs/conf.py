@@ -7,11 +7,11 @@ author = 'Ritwik Ganguly'
 copyright = '2025, GARAGE'
 
 # -- General configuration ---------------------------------------------------
-# Sphinx core extensions -- you can add/remove as needed
+# Sphinx core extensions
 extensions = [
     'sphinx.ext.autodoc',         # Document code from docstrings
     'sphinx.ext.napoleon',        # Google and NumPy docstring support
-    #'sphinx.ext.viewcode',        # Add links to source code
+    # 'sphinx.ext.viewcode',      # Removed to disable "View page source" button
     'sphinx.ext.todo',            # Highlight TODOs in docs
     'myst_parser',                # Markdown support (optional but recommended)
     'sphinx.ext.githubpages',
@@ -25,6 +25,7 @@ myst_enable_extensions = [
     "dollarmath",     # For LaTeX math in markdown files
     "colon_fence",    # For special blocks, e.g., admonitions
 ]
+
 source_suffix = {
     '.rst': 'restructuredtext',
     '.md': 'markdown',
@@ -37,19 +38,19 @@ html_static_path = ['_static']
 # Optional sidebar/logo settings for sphinx_rtd_theme
 # html_logo = '_static/logo.png'  # put your logo here, optional
 html_theme_options = {
-    'display_version': True,     # Show version next to project name
+    'display_version': True,      # Show version next to project name
     'collapse_navigation': False, # Expand sidebar by default
 
-    # GitHub options:
-    'github_url': 'https://github.com/RitwikGanguly/GARAGE',    
-    'use_edit_page_button': True,
+    # GitHub options
+    'github_url': 'https://github.com/RitwikGanguly/GARAGE',
+    'use_edit_page_button': True,  # Shows "Edit on GitHub" instead of "View page source"
 }
 
 html_context = {
     'github_user': 'RitwikGanguly',
     'github_repo': 'GARAGE',
-    'github_version': 'main',                      # Branch name, e.g., 'main' or 'master'
-    'doc_path': 'docs',                            # Path to your docs directory in the repo
+    'github_version': 'main',      # Branch name, e.g., 'main' or 'master'
+    'doc_path': 'docs',            # Path to your docs directory in the repo
 }
 
 # -- Extra: Support for code highlighting ------------------------------------
@@ -64,4 +65,3 @@ todo_include_todos = True
 # ]
 
 # For more extension options: https://www.sphinx-doc.org/en/master/usage/extensions/index.html
-
