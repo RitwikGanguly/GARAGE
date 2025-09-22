@@ -57,3 +57,6 @@ Overview
    :caption: Theoretical Background
 
    project_overview
+   bioinformatics
+   singlecell
+   gan
