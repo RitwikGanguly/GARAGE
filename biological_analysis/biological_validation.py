@@ -3,9 +3,12 @@
 Biological validation of attention-prioritised cells.
 ======================================================
 
-Dataset:   CBMC (bone marrow mononuclear cells, 7,895 cells, 2,000 genes)
-Question:  Do high-attention cells (selected by the GAT) show enrichment of
-           known rare-cell‑type marker genes relative to low-attention cells?
+Dataset
+  CBMC (bone marrow mononuclear cells, 7,895 cells, 2,000 genes)
+
+Question
+  Do high-attention cells (selected by the GAT) show enrichment of
+  known rare-cell-type marker genes relative to low-attention cells?
 
 The script:
   1. Loads the CBMC expression matrix and cell‑type labels.

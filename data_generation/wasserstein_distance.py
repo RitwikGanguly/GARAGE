@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
-Wasserstein distance between real and generated scRNA‑seq distributions.
-======================================================================
+Wasserstein distance between real and generated scRNA-seq distributions.
+=========================================================================
 
 For each (dataset, leakage_level), this script:
   1. Loads the real expression matrix.

@@ -9,7 +9,7 @@ A two-stage framework for generating high-fidelity synthetic scRNA-seq data:
     A Graph Attention Network (GAT) classifier is trained on a KNN cell-cell
     graph.  Rare cell types receive a priority weight boost.  After training,
     per-cell attention scores from the second GAT layer are extracted and the
-    top-k cells (k = leakage_fraction * n_cells) are selected as ``seeds''.
+    top-k cells (k = leakage_fraction * n_cells) are selected as "seeds".
 
   Stage 2 (GAN Generation with Attention-Guided Seeding):
     A Generator/Discriminator GAN is trained.  Instead of pure noise, the
@@ -299,9 +299,9 @@ def train_gan(x_plot, Xnew, n_features, seed=SEED):
     """
     Train the GAN with the GAT-seeded hybrid input.
 
-    The generator's input batch Z_batch is a vertical stack of
-        (random noise) + (GAT-selected seed cells),
-    giving the generator a biological ``anchor'' for rare cell types.
+    The generator's input batch Z_batch is a vertical stack of random
+    noise plus GAT-selected seed cells, giving the generator a biological
+    "anchor" for rare cell types.
 
     Parameters
     ----------

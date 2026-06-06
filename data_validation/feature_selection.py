@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Feature selection for scRNA-seq data (Python port of feature_selection.R).
-=======================================================================
+===========================================================================
 
 Three methods are provided, mirroring the original R implementation:
 

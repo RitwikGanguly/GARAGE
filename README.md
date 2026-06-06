@@ -16,13 +16,10 @@
     <img alt="License" src="https://img.shields.io/github/license/RitwikGanguly/GARAGE"/>
   </a>
 
-  <a href="https://app.gitter.im/#/room/!FIUyTpwDzJtqorWCMm:gitter.im">
-    <img alt="Gitter" src="https://badges.gitter.im/garage/garage.svg"/>
-  </a>
 </p>
 
 <p align="center">
-  <img alt="Docs" src="https://img.shields.io/badge/Docs-Mkdocs-red"/>
+  <img alt="Docs" src="https://img.shields.io/badge/Docs-Sphinx-blue"/>
   <img alt="Linting" src="https://img.shields.io/badge/Linting-flake8%20black%20mypy-yellow"/>
 </p>
 

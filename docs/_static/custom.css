@@ -1,0 +1,34 @@
+/* GARAGE ReadTheDocs custom styles */
+
+/* -- Wider content area for code blocks and diagrams -- */
+.wy-nav-content {
+    max-width: 1000px !important;
+}
+
+/* -- Cleaner table styling for biological validation tables -- */
+.wy-table-responsive table td,
+.wy-table-responsive table th {
+    white-space: normal !important;
+}
+
+/* -- Inline code styling -- */
+code.literal {
+    color: #404040 !important;
+    background: #f0f0f0 !important;
+    border: none !important;
+}
+
+/* -- Slightly larger callout boxes -- */
+.admonition {
+    margin: 1.2em 0 !important;
+}
+
+/* -- Back-to-top spacing -- */
+.toctree-wrapper {
+    margin-top: 0.8em;
+}
+
+/* -- Better separation between sections -- */
+.section {
+    margin-bottom: 1.5em;
+}

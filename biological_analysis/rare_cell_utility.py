@@ -1,25 +1,27 @@
 #!/usr/bin/env python
 """Held-out rare-cell utility experiment.
 ===========================================
+
 For each dataset:
-  1. Hold out 50% of the rarest cell type as unseen test cells.
-     NON-RARE cells are also split 50/50 — zero overlap between train/test.
-  2. Retrain each generative model on the training data.
-   3. Generate synthetic cells = 10 × n_train_rare  (controlled volume).
-  4. Label synthetic cells as the rare type and augment the training set.
-  5. Train a Random Forest classifier on:
-       - Real only
-       - Real + GAN  synthetic
-       - Real + LSH-GAN  synthetic
-       - Real + GARAGE  synthetic
-  6. Evaluate on the held-out test set:
-       - Rare-cell Recall
-       - Rare-cell F1
-       - Macro-F1  (standard macro over all label-encoder classes)
 
-PCA: Yan uses 50 PCA components (10564→50) to avoid RF degeneracy.
+1. Hold out 50% of the rarest cell type as unseen test cells.
+   NON-RARE cells are also split 50/50 -- zero overlap between train/test.
+2. Retrain each generative model on the training data.
+3. Generate synthetic cells = 10 x n_train_rare (controlled volume).
+4. Label synthetic cells as the rare type and augment the training set.
+5. Train a Random Forest classifier on:
+   - Real only
+   - Real + GAN synthetic
+   - Real + LSH-GAN synthetic
+   - Real + GARAGE synthetic
+6. Evaluate on the held-out test set:
+   - Rare-cell Recall
+   - Rare-cell F1
+   - Macro-F1 (standard macro over all label-encoder classes)
 
-GPU: AMP GradScaler, 50 % memory cap, cudnn benchmark, cache clearing.
+PCA: Yan uses 50 PCA components (10564 to 50) to avoid RF degeneracy.
+
+GPU: AMP GradScaler, 50% memory cap, cudnn benchmark, cache clearing.
 
 Usage:  conda run -n ritwik_base python run_rare_cell_utility.py
 """

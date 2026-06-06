@@ -1,29 +1,67 @@
 # Configuration file for the Sphinx documentation builder
 # See: https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import os
+import sys
+
+# Add the GARAGE repository root to sys.path so autodoc can import modules
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 # -- Project information -----------------------------------------------------
 project = 'GARAGE'
 author = 'Ritwik Ganguly'
 copyright = '2025, GARAGE'
+version = '1.0.0'
+release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
-# Sphinx core extensions
 extensions = [
-    'sphinx.ext.autodoc',         # Document code from docstrings
-    'sphinx.ext.napoleon',        # Google and NumPy docstring support
-    # 'sphinx.ext.viewcode',      # Removed to disable "View page source" button
-    'sphinx.ext.todo',            # Highlight TODOs in docs
-    'myst_parser',                # Markdown support (optional but recommended)
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.todo',
+    'myst_parser',
     'sphinx.ext.githubpages',
 ]
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = [
+    '_build', 'Thumbs.db', '.DS_Store',
+    'ari.md', 'bioinformatics.md', 'feature.md', 'leiden.md',
+    'pca.md', 'project_overview.md', 'umap.md',
+]
+
+# -- Intersphinx mappings ----------------------------------------------------
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'numpy': ('https://numpy.org/doc/stable/', None),
+    'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/', None),
+    'sklearn': ('https://scikit-learn.org/stable/', None),
+    'torch': ('https://pytorch.org/docs/stable/', None),
+    'matplotlib': ('https://matplotlib.org/stable/', None),
+}
+
+# -- Autosummary -------------------------------------------------------------
+autosummary_generate = False
+
+# -- Autodoc options ---------------------------------------------------------
+autodoc_default_options = {
+    'members': True,
+    'undoc-members': False,
+    'show-inheritance': True,
+}
+autodoc_typehints = 'description'
 
 # -- Options for Markdown files via myst-parser ------------------------------
 myst_enable_extensions = [
-    "dollarmath",     # For LaTeX math in markdown files
-    "colon_fence",    # For special blocks, e.g., admonitions
+    "dollarmath",
+    "colon_fence",
+    "deflist",
+    "fieldlist",
+    "attrs_inline",
+    "attrs_block",
 ]
 
 source_suffix = {
@@ -35,36 +73,53 @@ source_suffix = {
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
-# Optional sidebar/logo settings for sphinx_rtd_theme
-# html_logo = '_static/logo.png'  # put your logo here, optional
 html_theme_options = {
-    'display_version': True,      # Show version next to project name
-    'collapse_navigation': False, # Expand sidebar by default
-
-    # GitHub options
-    'github_url': 'https://github.com/RitwikGanguly/GARAGE',
-    'use_edit_page_button': True,  # Shows "Edit on GitHub" button
+    'collapse_navigation': False,
+    'navigation_depth': 4,
 }
 
 html_context = {
     'github_user': 'RitwikGanguly',
     'github_repo': 'GARAGE',
-    'github_version': 'main',      # Branch name, e.g., 'main' or 'master'
-    'doc_path': 'docs',            # Path to your docs directory in the repo
+    'github_version': 'main',
+    'doc_path': 'docs',
 }
 
-# -- Remove "View page source" button ---------------------------------------
-html_show_sourcelink = False      # This disables the top-right "View page source" button
+html_css_files = [
+    'custom.css',
+]
 
-# -- Extra: Support for code highlighting ------------------------------------
-pygments_style = 'sphinx'        # Syntax highlighting for code blocks
+html_show_sourcelink = False
 
-# -- Extra: TODOs support ----------------------------------------------------
+# -- Syntax highlighting -----------------------------------------------------
+pygments_style = 'sphinx'
+
+# -- TODOs -------------------------------------------------------------------
 todo_include_todos = True
 
-# -- Optional: Add custom CSS
-# html_css_files = [
-#     'custom.css',
-# ]
+# -- MyST heading anchors ----------------------------------------------------
+myst_heading_anchors = 3
 
-# For more extension options: https://www.sphinx-doc.org/en/master/usage/extensions/index.html
+# -- Suppress specific warnings ----------------------------------------------
+suppress_warnings = [
+    'myst.xref_missing',
+    'autodoc.import_object',
+    'autosummary.import_cycle',
+]
+
+# -- Mock heavy imports for autodoc on ReadTheDocs (no GPU/deps needed) -------
+autodoc_mock_imports = [
+    'torch', 'torch.nn', 'torch.optim', 'torch.cuda', 'torch.amp',
+    'torch_geometric', 'torch_geometric.nn', 'torch_geometric.nn.pool',
+    'torch_geometric.data', 'torch_geometric.utils',
+    'scanpy', 'leidenalg',
+    'ot',
+    'matplotlib',
+    'seaborn',
+    'scipy',
+    'sklearn', 'sklearn.preprocessing', 'sklearn.metrics',
+    'sklearn.neighbors', 'sklearn.ensemble', 'sklearn.decomposition',
+    'anndata',
+    'numpy',
+    'pandas',
+]
