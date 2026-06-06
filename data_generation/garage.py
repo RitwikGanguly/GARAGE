@@ -28,7 +28,8 @@ Usage
 Citation
 --------
     Ganguly, R., et al.  "GARAGE: A Graph-Attentive GAN for Rare-Cell-Aware
-    Single-Cell RNA-seq Data Generation."  [TO BE ADDED]
+    Single-Cell RNA-seq Data Generation."  bioRxiv, 2025.
+    DOI: 10.1101/2025.09.28.679012
 """
 
 import argparse

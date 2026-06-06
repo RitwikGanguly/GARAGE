@@ -199,13 +199,17 @@ python ablation_study/leakage_ablation.py
 
 ## Citation
 
+If you use **GARAGE** in your research, please cite:
+
+> Ganguly, R., et al.  "GARAGE: A Graph-Attentive GAN for Rare Cell-Aware Single-Cell RNA-seq Data Generation."  *bioRxiv*, 2025.  DOI: [10.1101/2025.09.28.679012](https://doi.org/10.1101/2025.09.28.679012)
+
 ```bibtex
 @software{garage2025,
   author    = {Ganguly, Ritwik and others},
   title     = {GARAGE: Graph-Attentive Rare-cell-Aware single-cell RNA-seq Data Generation},
   year      = {2025},
   url       = {https://github.com/RitwikGanguly/GARAGE},
-  doi       = {to be added}
+    doi       = {10.1101/2025.09.28.679012}
 }
 ```
 

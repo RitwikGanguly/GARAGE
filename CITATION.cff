@@ -6,6 +6,7 @@ authors:
     family-names: Ganguly
     orcid: ""
 type: software
+doi: 10.1101/2025.09.28.679012
 repository-code: "https://github.com/RitwikGanguly/GARAGE"
 url: "https://github.com/RitwikGanguly/GARAGE"
 license: MIT
