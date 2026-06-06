@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use GARAGE in your research, please cite it using this metadata."
+title: "GARAGE: Graph-Attentive Rare-cell-Aware single-cell RNA-seq Data Generation"
+authors:
+  - given-names: Ritwik
+    family-names: Ganguly
+    orcid: ""
+type: software
+repository-code: "https://github.com/RitwikGanguly/GARAGE"
+url: "https://github.com/RitwikGanguly/GARAGE"
+license: MIT
+keywords:
+  - single-cell RNA-seq
+  - generative adversarial network
+  - graph attention network
+  - rare cell types
+  - data augmentation
+  - deep learning
+  - bioinformatics

@@ -1,6 +1,5 @@
 <p align="center">
   <img src="img/github_title_garage.png" alt="GARAGE" width="680"/>
-<!--   <h1 align="center">GARAGE</h1> -->
 </p>
 
 <p align="center">
@@ -9,184 +8,209 @@
   <img alt="Python" src="https://img.shields.io/badge/python-3.12.5-blue"/>
   </a>
 
-  <!-- Documentation (if enabled) -->
   <a href="https://garage-docs.readthedocs.io/en/latest/">
     <img alt="Documentation Status" src="https://readthedocs.org/projects/garage/badge/?version=latest"/>
   </a>
 
-  <!-- License -->
   <a href="https://github.com/RitwikGanguly/GARAGE/blob/main/LICENSE">
     <img alt="License" src="https://img.shields.io/github/license/RitwikGanguly/GARAGE"/>
   </a>
-  
-  
-  <!-- Gitter / Community Chat -->
+
   <a href="https://app.gitter.im/#/room/!FIUyTpwDzJtqorWCMm:gitter.im">
     <img alt="Gitter" src="https://badges.gitter.im/garage/garage.svg"/>
   </a>
 </p>
 
 <p align="center">
-  <img alt="Poetry" src="https://img.shields.io/badge/Packaging-Poetry-blue"/>
   <img alt="Docs" src="https://img.shields.io/badge/Docs-Mkdocs-red"/>
   <img alt="Linting" src="https://img.shields.io/badge/Linting-flake8%20black%20mypy-yellow"/>
 </p>
 
 ---
 
-# GARAGE - A Graph Attentive GAN for Rare Cell Aware single cell RNA-seq Data Generation
+# GARAGE — Graph-Attentive Rare-cell-Aware single-cell RNA-seq Data Generation
 
-A python pipeline for synthetic single cell (scRNA-seq) data generation using graph attention-based GAN approach.
+A deep-learning framework for generating high-fidelity synthetic scRNA-seq data
+with a specialised focus on preserving rare cell populations.
 
-## 🔗 Related Links :
-**Docs :** [GARAGE Documentation ☑️](https://garage-docs.readthedocs.io/en/latest/) 
-
----
-
-**GARAGE** (**G**raph-**A**ttentive **RA**re-cell aware single-cell data **GE**neration) is a novel deep learning framework for generating high-fidelity synthetic single-cell RNA-seq (scRNA-seq) data.
-
-Traditional Generative Adversarial Networks (GANs) often struggle with the high-dimensional and sparse nature of scRNA-seq data, leading to training instability and a failure to reproduce rare but biologically important cell populations. GARAGE overcomes these challenges with a unique two-stage architecture that intelligently guides the generative process.
+**Docs:** [garage-docs.readthedocs.io](https://garage-docs.readthedocs.io/en/latest/)
 
 ---
 
-##  Workflow
+## Workflow
 
-The GARAGE framework uses a two-stage process to generate realistic synthetic cells, with a special focus on preserving rare cell types.
+GARAGE uses a two-stage architecture:
 
 <p align="center">
-  <img src="img/garage_workflow.jpg" alt="GARAGE" width="680"/>
+  <img src="img/garage_workflow.jpg" alt="GARAGE workflow" width="680"/>
 </p>
 
-*A high-level overview of the GARAGE framework.*
-
-1.  **Stage 1: GAT-based Cell Selection:**
-    A Graph Attention Network (GAT) is first trained on a cell-cell neighborhood graph. By leveraging its attention mechanism, the GAT identifies a core set of "archetypal" or high-importance cells that are most influential in defining the data's structure and cell-type identities.
-
-2.  **Stage 2: GAT-Seeded GAN Generation:**
-    Instead of receiving only random noise, the GAN's generator is fed a **hybrid input batch**. This batch is a mixture of random vectors and the high-priority "seed" cells selected by the GAT. This "attention-guided leakage" anchors the generator to known, biologically realistic states, stabilizing training and ensuring all cell types are represented.
+1. **Stage 1 — GAT-based Cell Selection:** A Graph Attention Network identifies
+   archetypal "seed" cells via attention ranking on a KNN cell-cell graph.
+2. **Stage 2 — GAT-Seeded GAN Generation:** The generator receives a hybrid
+   input batch mixing random noise with the GAT-selected seeds, anchoring the
+   generative process to biologically realistic states.
 
 ---
 
-## 🚀 Key Features
+## Quick Start
 
-*   **GAT-Informed Seeding:** Moves beyond random sampling to intelligently select the most representative cells to guide generation.
-*   **Enhanced Rare Cell Generation:** The framework is explicitly designed to better capture and generate samples for rare and underrepresented cell populations.
-*   **Improved Stability & Convergence:** The seeded-generation process significantly stabilizes GAN training, reduces mode collapse, and accelerates convergence.
-*   **High-Fidelity Synthetic Data:** Produces synthetic datasets ideal for data augmentation, methods benchmarking, and privacy-preserving data sharing.
-
----
-
-## 📂 Repository Structure
-
-```
-├── .github/workflows/       # CI/CD workflows (e.g., for ReadTheDocs)
-├── benchmarking/            # Scripts for benchmarking GARAGE against other models
-    ├── 5 Models (.py)       # gan, wgan, fgan, lsh-gan, vae SOTA models
-├── data/                    # Directory for input data
-│   ├── cell_types/          # Folder for cell type label files (.csv)
-│   └── expression_data/     # Folder for gene expression matrices (.csv)
-├── data_generation/         # Core scripts for the GARAGE pipeline
-│   ├── garage.py            # Main script for GAT selection and GAN training
-│   └── wasserstein_distance.py     # Script to calculate Wasserstein Distance
-├── data_validation/         # Scripts and notebooks for evaluating generated data
-│   ├── feature_selection.R         # R script for Feature Selection analysis
-│   └── data_vaidation_garage.ipynb # Notebook for ARI, NMI, F1-score, and UMAPs
-├── docs/                    # Source files for documentation (ReadTheDocs)
-├── img/                     # Images used in the README and docs
-├── .gitignore               # Files to be ignored by Git
-├── LICENSE                  # Project license (MIT)
-├── readthedocs.yaml         # Configuration for ReadTheDocs
-├── requirements_benchmarking.txt   # For Benchmarking in py(v3.7.12), packages to be installed
-└── requirements_garage.txt  # For GARAGE pipeline in py(3.12.5), python packages to be installed
-```
-**Importent:** For GARAGE Model (v3.12.5) || For Benchmarking (v3.7.12) || For Data Validation (v3.9.21)
-
----
-
-## 🛠️ Getting Started
-
-Follow these instructions to set up your environment and run the GARAGE pipeline.
-
-### Prerequisites
-
-*   Git
-*   Python (3.7 or higher) [python versions mentioned earlier]
-*   R (for feature selection validation scripts)
-
-### 1. Clone the Repository
-
-Clone this repository to your local machine:
 ```bash
 git clone https://github.com/RitwikGanguly/GARAGE.git
 cd GARAGE
-```
-
-### 2. Set Up the Environment
-
-We strongly recommend using a virtual environment to manage dependencies.
-
-```bash
-# Create a virtual environment (Windows)
-python -m venv venv_garage
-
-# Create a virtual environment (Linux)
 conda create --name venv_garage python=3.12.5
-```
-
-```bash
-# Activate the environment
-
-# On Windows:
-.\venv_garage\Scripts\activate
-
-# On Linux:
 conda activate venv_garage
-```
-
-### 3. Install Dependencies
-
-This repository contains two requirements files. For running the main pipeline, use `requirements_garage.txt`.
-
-```bash
 pip install -r requirements_garage.txt
-```
-If you also want to run the benchmarking scripts, install the additional dependencies:
-```bash
-pip install -r requirements_benchmarking.txt
-```
 
-**Disclaimer:** For all the code files, at the beginning of all, the required py version, necessary packages to be installed, every required dependencies are mentioned.
+# Run the core pipeline on a single dataset
+python -m data_generation.garage --dataset muraro
+
+# Run the state-of-the-art benchmarks
+python -m benchmarking.sota.gan --dataset muraro
+
+# Validate generated data
+python -m data_validation.data_validation \
+    --dataset muraro \
+    --gen_csv data/gen_data/muraro_data_mixdata_iter3_top_426.csv
+```
 
 ---
 
-## ⚙️ Usage: The GARAGE Pipeline
+## Repository Structure
 
-To generate and validate your own synthetic single-cell data, the below steps need to be followed :
-
-- Prepare Your Data 📁
-- Run GARAGE 🧠
-- Validate the Generated Data 📊
-
-🍁 We have a dedicated documentation for GARAGE at - [GARAGE Documentation ☑️](https://garage-docs.readthedocs.io/en/latest/) 
-
-🙋‍♂️ CALM DOWN❗Have a SEE 👀
-
-## 📜 Citation
-
-If you use **GARAGE** in your research, please cite our paper:
-
-```bibtex
-  TO BE ADDED SOON
+```
+├── data_generation/                Core GARAGE pipeline
+│   ├── garage.py                   Full GARAGE: GAT subsampling + GAN generation
+│   └── wasserstein_distance.py     Wasserstein distance real↔gen
+│
+├── data_validation/                Quality evaluation
+│   ├── feature_selection.py        Python port of the R feature-selection (CV², Fano, PCA)
+│   ├── feature_selection.R         Original R implementation (for reference)
+│   ├── data_validation.py          Clustering (Leiden) → ARI / NMI / macro-F1 / UMAP
+│   └── data_vaidation_garage.ipynb Original notebook (for reference)
+│
+├── benchmarking/
+│   ├── sota/                       General-purpose generative baselines (PyTorch)
+│   │   ├── gan.py                  Vanilla GAN (BCE, Adam)
+│   │   ├── wgan.py                 Wasserstein GAN (RMSprop, weight clipping)
+│   │   ├── fgan.py                 f-divergence GAN (Fisher ratio + constraint penalty)
+│   │   ├── vae.py                  Variational Autoencoder (MSE + KL)
+│   │   ├── lsh_gan.py             LSH-GAN (KNN subsample + GAN)
+│   │   └── *_tf1.py               Original TF1.11 implementations (for reference)
+│   └── scrna_seq_specific/         scRNA‑seq‑specific baselines (PyTorch)
+│       ├── scgan.py               scGAN (WGAN‑GP, deep architecture)
+│       ├── scvae.py               scVAE (β‑VAE, deep encoder/decoder)
+│       ├── scdiffusion.py         scDiffusion (DDPM with MLP denoiser)
+│       ├── gan_ros.py             GAN + Random Oversampling (ROS)
+│       └── vae_ros.py             VAE + Random Oversampling (ROS)
+│
+├── biological_analysis/            Rare-cell biology experiments
+│   ├── rare_cell_utility.py        Held‑out rare-cell classification utility
+│   ├── marker_gene_clustering.py   Marker‑gene‑based clustering evaluation
+│   └── biological_validation.py    GAT attention weights ↔ marker‑gene enrichment
+│
+├── ablation_study/                 Sensitivity experiments
+│   ├── leakage_ablation.py         Varying GAT‑leakage fraction (0.0–0.3)
+│   └── multi_seed_synthesis.py    Multi‑seed data generation (5 seeds × 4 datasets)
+│
+├── analysis/                       Post‑processing and plotting
+│   ├── distribution_metrics.py     MMD + Sliced Wasserstein Distance
+│   ├── clustering_evaluation.py    Feature‑selection + clustering across seeds
+│   ├── sc_specific_benchmark.py   ARI/NMI/F1 for sc‑specific baselines
+│   ├── aggregate_losses.py        Aggregate GAN loss records
+│   ├── build_summary_tables.py    Build mean±std summary tables
+│   ├── marker_clustering_grid.py  Grid‑search marker‑gene clustering
+│   └── plot_wasserstein_vs_leakage.py  WD vs leakage figure
+│
+├── tnbc/                           TNBC interpretability experiments
+│   ├── graph_main.py
+│   ├── sub_8.py
+│   └── explainability.py
+│
+├── data/                           Input data directory
+│   ├── cell_types/.gitkeep         Cell‑type label files (*.csv)
+│   └── expression_matrix/.gitkeep  Gene‑expression matrices (*.csv)
+│
+├── results/                        Output directory (generated CSVs, figures)
+│
+├── docs/                           ReadTheDocs documentation source
+├── img/                            Images used in README and docs
+├── config.py                       Shared paths and hyper‑parameter constants
+├── CITATION.cff                    Citation metadata
+├── LICENSE                         MIT License
+├── requirements_garage.txt         Core dependencies (GARAGE pipeline + validation)
+├── requirements_benchmarking.txt   Extra dependencies (benchmarking baselines)
+└── README.md
 ```
 
-## 📄 License
+---
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+## How to reproduce the paper results
 
+### 1. Generate synthetic data
 
+```bash
+# GARAGE (all 4 datasets)
+for d in yan pollen cbmc muraro; do
+    python -m data_generation.garage --dataset $d
+done
 
+# SOTA baselines (5 methods × 4 datasets)
+for d in yan pollen cbmc muraro; do
+    python -m benchmarking.sota.gan --dataset $d
+    python -m benchmarking.sota.wgan --dataset $d
+    python -m benchmarking.sota.fgan --dataset $d
+    python -m benchmarking.sota.vae --dataset $d
+    python -m benchmarking.sota.lsh_gan --dataset $d
+done
 
+# scRNA‑seq‑specific baselines (5 methods × 4 datasets)
+for d in yan pollen cbmc muraro; do
+    python -m benchmarking.scrna_seq_specific.scgan --dataset $d
+    python -m benchmarking.scrna_seq_specific.scvae --dataset $d
+    python -m benchmarking.scrna_seq_specific.scdiffusion --dataset $d
+    python -m benchmarking.scrna_seq_specific.gan_ros --dataset $d
+    python -m benchmarking.scrna_seq_specific.vae_ros --dataset $d
+done
+```
 
+### 2. Validate data quality
 
+```bash
+# Feature selection (CV²) + Leiden clustering + ARI/NMI/F1
+python -m data_validation.data_validation --dataset muraro \
+    --gen_csv data/gen_data/muraro_data_mixdata_iter3_top_426.csv
 
+# Wasserstein distance
+python -m data_generation.wasserstein_distance --dataset muraro \
+    --gen_csv data/gen_data/muraro_data_mixdata_iter3_top_426.csv
+```
 
+### 3. Run biological and ablation studies
+
+```bash
+python biological_analysis/rare_cell_utility.py
+python biological_analysis/marker_gene_clustering.py
+python biological_analysis/biological_validation.py
+python ablation_study/leakage_ablation.py
+```
+
+---
+
+## Citation
+
+```bibtex
+@software{garage2025,
+  author    = {Ganguly, Ritwik and others},
+  title     = {GARAGE: Graph-Attentive Rare-cell-Aware single-cell RNA-seq Data Generation},
+  year      = {2025},
+  url       = {https://github.com/RitwikGanguly/GARAGE},
+  doi       = {to be added}
+}
+```
+
+---
+
+## License
+
+MIT License — see the [LICENSE](LICENSE) file.

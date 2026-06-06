@@ -1,337 +1,487 @@
 #!/usr/bin/env python
-# coding: utf-8
-## Need to activate the conda env 
+"""
+GARAGE — Graph-Attentive Rare-cell-Aware single-cell data GEneration.
+=========================================================================
 
-## importing the libraries
+A two-stage framework for generating high-fidelity synthetic scRNA-seq data:
 
+  Stage 1 (GAT Subsampling):
+    A Graph Attention Network (GAT) classifier is trained on a KNN cell-cell
+    graph.  Rare cell types receive a priority weight boost.  After training,
+    per-cell attention scores from the second GAT layer are extracted and the
+    top-k cells (k = leakage_fraction * n_cells) are selected as ``seeds''.
+
+  Stage 2 (GAN Generation with Attention-Guided Seeding):
+    A Generator/Discriminator GAN is trained.  Instead of pure noise, the
+    generator receives a *hybrid* input batch: a mix of random noise vectors
+    and the GAT-selected seed cells.  This seeding anchors the generator to
+    biologically realistic states, stabilises training, and ensures rare cell
+    types are represented in the output.
+
+Datasets supported: Yan (124 cells, 6 types), Pollen (301 cells, 11 types),
+                     CBMC (7,895 cells, 13 types), Muraro (2,126 cells, 10 types).
+
+Usage
+-----
+    python -m data_generation.garage --dataset muraro
+
+Citation
+--------
+    Ganguly, R., et al.  "GARAGE: A Graph-Attentive GAN for Rare-Cell-Aware
+    Single-Cell RNA-seq Data Generation."  [TO BE ADDED]
+"""
+
+import argparse
+import math
+import os
+import time
+import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch_geometric.nn import GATConv
-from torch_geometric.data import Data
 from sklearn.preprocessing import LabelEncoder
 from sklearn.neighbors import NearestNeighbors
-from torch.utils.data import TensorDataset, DataLoader
-from torch.amp import GradScaler, autocast
-import numpy as np
-import timeit
-import math
-import pyreadr
-
-import torch
-import torch.nn as nn
 from torch_geometric.nn import GATConv
-
-
-
-
-
-## Setting device on GPU if available, else CPU
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-
-# ## GAT - SubSampling
-
-def gat_main(data,label,index_list, k):
-
-    # import torch.nn.functional as F
-    
-    
-
-    
-
-
-
-
-    # Assuming attention1[0] has shape [num_heads, num_edges]
-    # For example, if num_heads=2 and num_edges=450
-    attention_coefficients = attention2[0]
-
-    # Assuming edge_index has shape [2, num_edges]
-    # edge_index[0] and edge_index[1] represent the source and target nodes of each edge
-    edge_index_source_nodes = edge_index[0]
-
-    # Convert X from a NumPy array to a PyTorch tensor
-    X = torch.tensor(X, dtype=torch.float32, device=edge_index.device)
-
-    # Calculate attention weights for each node
-    num_nodes = X.shape[0]
-
-    # Initialize attention_weights as a PyTorch tensor
-    attention_weights = torch.zeros(num_nodes, device=X.device)
-
-    for i in range(num_nodes):
-        # Find indices of edges incident to node i
-        incident_edges_mask = edge_index_source_nodes == i
-        incident_edges_attention = attention_coefficients[:, incident_edges_mask]
-
-        # Convert the attention coefficients to float32 dtype
-        incident_edges_attention = incident_edges_attention.float()
-
-        # Aggregate attention coefficients for node i
-        node_attention = torch.mean(incident_edges_attention, dim=1)
-        attention_weights[i] = torch.mean(node_attention)
-
-   # print("Attention Weights for Each Node:", attention_weights)
-
-    sorted_indices = torch.argsort(attention_weights, descending=True)
-
-    # Select the top-k nodes
-    top_node=k
-    
-    top_k_nodes = sorted_indices[:top_node]
-
-#    print("Top", k, "Nodes:", top_k_nodes)
-
-    return(top_k_nodes)
-
-
-
-
-
-## Muraro files don't need the index_col = 0 but need header = 0 (both df1, df2)
-## CBMC needs index_col = 0 and header = 0 (both df1, df2)
-## pollen needs header = None (both df1, df2)
-## yan needs header = None (both df1, df2)
-
-df2 = pd.read_csv(r"data/cell_types/yan_celltype.csv", header = None) 
-df1 = pd.read_csv("data/expression_matrix", header=None)
-
-
-## "YAN" & "CBMC" needs ==> transpose, "POLLEN" & "MURARO" does not need transpose
-
-
-df1 = df1.T
-
-
-df1.reset_index(drop=True, inplace=True)
-df2.reset_index(drop=True, inplace=True)
-
-
-
-
-df2 = df2.rename(columns={df2.columns[0]: "cell_type"})
-df3 = pd.concat([df1, df2], axis=1)
-
-
-
-
-
-n_sample, n_features = df1.shape
-
-
-
-
-
-
-## for cbmc = 200, yan = 10, pollen = 25, muraro = 200
-
-class_labels = df3.cell_type.value_counts()
-rare_types = class_labels[class_labels <= 10].index.tolist()
-selected_rows = df3.loc[df3['cell_type'].isin(rare_types)]
-index_list = selected_rows.index.tolist()
-
-
-
-# Encode labels
-label_encoder = LabelEncoder()
-df3['class_label_encoded'] = label_encoder.fit_transform(df3['cell_type'])
-X = df3.iloc[:, :-2].values  # Features
-y = df3['class_label_encoded'].values  # Encoded labels
-
-
-
-# Hyperparameters
-## here the percentage of leakage is multiplied by n_sample to get the actual leakage nodes
-## as example 20% leakage, means multiplied by 0.2
-
-
-k = math.ceil(n_sample*0.2)   # Top-k nodes
-
-
-
-## Checking for NO LEAKAGE
-### taking no node from GAT 
-## to check the comparitive study
-
-k = 0
-
-
-x_plot = X
-row=x_plot.shape[0] 
-col=x_plot.shape[1]
-
-
-
-## The Gat training and getting the top-k indices
-Xnew_gat_indices = gat_main(X, y, index_list, k)
-
-
-
-Xnew = x_plot[Xnew_gat_indices.numpy(), :]
-
-
-# ## GAN - Data Generation
-
-# ### NOISE
-
-
-
-
-# Training parameters
-nd_steps = 5
-ng_steps = 2
-
-
-torch.manual_seed(42)
-np.random.seed(42)
-
-
-# ## GARAGE Part
-
-
-for i in range(20001):
-    # Prepare X_batch (real data)
-    X_batch_np = x_plot
-    X_batch = torch.tensor(X_batch_np, dtype=torch.float32).to(device)
-    # Prepare Z_batch (noise + selected real data features)
-    row1 = row - Xnew.shape[0]
-    if row1 < 0: row1 = 0 # Ensure non-negative for sample_Z if Xnew is larger than row
-
-    da1 = sample_Z(row1, col)
-
-    # Ensure Xnew is 2D even if it has 1 row after GAT selection
-    current_xnew_np = Xnew
-    if current_xnew_np.ndim == 1:
-        current_xnew_np = current_xnew_np.reshape(1, -1)
-
-
-    Z_batch_np = np.vstack((da1, current_xnew_np))
-
-
-    Z_batch = torch.tensor(Z_batch_np, dtype=torch.float32).to(device)
-
-    dloss_epoch = 0
-    # Train Discriminator
-    for _ in range(nd_steps):
-        disc_optimizer.zero_grad()
-        
-        
-        
-        # Real samples
-        real_output, r_rep = discriminator_pt(X_batch)
-        
-        fake_samples = generator_pt(Z_batch).detach() 
-        fake_output, g_rep_dstep = discriminator_pt(fake_samples)
-        
-        ## Label Smoothning - without assigning direct 1 to real and 0 to fake, assign a fraction
-        ## of label to the real and fake sample as 0.9 and 0.1 respectively.
-        
-        real_labels = torch.full_like(real_output, 0.9).to(device) 
-        fake_labels = torch.full_like(fake_output, 0.1).to(device)
-        # disc_loss_real = criterion_gan(real_output, torch.ones_like(real_output).to(device))
-        
-        disc_loss_real = criterion_gan(real_output, real_labels)
-        
-        # Fake samples
-        # Use Z_batch_for_g which is guaranteed to be of size [row, col] for generating samples
-        # If Z_batch was constructed differently, G_sample might not match X_batch for discriminator
-        
-        # disc_loss_fake = criterion_gan(fake_output, torch.zeros_like(fake_output).to(device))
-        
-        disc_loss_fake = criterion_gan(fake_output, fake_labels)
-        
-        disc_loss = disc_loss_real + disc_loss_fake
-        disc_loss.backward()
-        
-        torch.nn.utils.clip_grad_norm_(discriminator_pt.parameters(), max_norm=1.0)
-        
-        
-        disc_optimizer.step()
-        dloss_epoch = disc_loss.item() # Keep last dloss of the steps
-
-    # rrep_dstep, grep_dstep = r_rep.detach(), g_rep_dstep.detach() # From last D step
-
-    gloss_epoch = 0
-    # Train Generator
-    for _ in range(ng_steps):
-        gen_optimizer.zero_grad()
-        
-        # Generate fake samples (again, use Z_batch_for_g for consistent sizing)
-        generated_samples = generator_pt(Z_batch)
-        gen_fake_output, _ = discriminator_pt(generated_samples) # We only need logits for G loss
-        
-        gen_loss = criterion_gan(gen_fake_output, torch.ones_like(gen_fake_output).to(device))
-        
-        # gen_loss = criterion_gan(gen_fake_output, torch.full_like(gen_fake_output, 0.9).to(device))
-        
-        
-        gen_loss.backward()
-        
-        torch.nn.utils.clip_grad_norm_(generator_pt.parameters(), max_norm=1.0) # Clip gradients
-
-        gen_optimizer.step()
-        gloss_epoch = gen_loss.item() # Keep last gloss of the steps
-
-    # rrep_gstep, grep_gstep = discriminator_pt(X_batch)[1].detach(), discriminator_pt(generator_pt(Z_batch_for_g))[1].detach()
-
-    # scheduler_g.step()
-    # scheduler_d.step()
-
-    if i % 100 == 0: # Original TF code printed every iteration
-        print("Iterations: %d\t Discriminator loss: %.4f\t Generator loss: %.4f"%(i, dloss_epoch, gloss_epoch)) 
-
-
-
-
-
-
-## Data Generation after the training of GAN
-
-
-feat_size = n_sample
-# Size of Generated Data
-batch_size_gen_np = (np.arange(0.25, 1.75, 0.25) * feat_size).astype(int)
-
-for i in range(len(batch_size_gen_np)): 
-    current_batch_size = batch_size_gen_np[i]
-    row1_gen = current_batch_size - Xnew.shape[0]
-    if row1_gen < 0: row1_gen = 0
-
-    da1_gen = sample_Z(row1_gen, n_features)
-    
-    current_xnew_np_gen = Xnew
-    # if current_xnew_np_gen.ndim == 1:
-    #     current_xnew_np_gen = current_xnew_np_gen.reshape(1, -1)
-
-    Z_batch_gen_np = np.vstack((da1_gen, current_xnew_np_gen))
-
-
-    Z_batch_gen = torch.tensor(Z_batch_gen_np, dtype=torch.float32).to(device)
-
+from torch_geometric.data import Data
+
+try:
+    from config import DATASET_CONFIG, DATA_DIR, RESULTS_DIR, GARAGE_DEFAULTS
+except ImportError:
+    import sys
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from config import DATASET_CONFIG, DATA_DIR, RESULTS_DIR, GARAGE_DEFAULTS
+
+
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+SEED = GARAGE_DEFAULTS["random_seed"]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 1. DATA LOADING
+# ═══════════════════════════════════════════════════════════════════════════
+
+def load_dataset(dataset_name):
+    """
+    Load expression matrix and cell-type labels for *dataset_name*.
+
+    Returns
+    -------
+    X : np.ndarray  (n_cells, n_genes) float32
+    y_str : np.ndarray  (n_cells,)  string labels
+    n_sample : int
+    n_features : int
+    """
+    if dataset_name not in DATASET_CONFIG:
+        raise ValueError(f"Unknown dataset '{dataset_name}'.  "
+                         f"Choose from {list(DATASET_CONFIG)}.")
+    cfg = DATASET_CONFIG[dataset_name]
+
+    # --- expression matrix ---
+    expr_path = os.path.join(DATA_DIR, "expression_matrix", cfg["expression_file"])
+    rk = {"header": cfg.get("header", 0)}
+    if "index_col" in cfg:
+        rk["index_col"] = cfg["index_col"]
+    df_expr = pd.read_csv(expr_path, **rk)
+    if cfg.get("transpose", False):
+        df_expr = df_expr.T
+    df_expr.reset_index(drop=True, inplace=True)
+
+    # --- cell-type labels ---
+    lbl_path = os.path.join(DATA_DIR, "cell_types", cfg["label_file"])
+    lk = {"header": cfg.get("label_header", None)}
+    df_label = pd.read_csv(lbl_path, **lk)
+    df_label.reset_index(drop=True, inplace=True)
+
+    if cfg["label_header"] is not None:
+        label_col = df_label.columns[0] if cfg["label_col"] not in df_label.columns else cfg["label_col"]
+        y_str = df_label[label_col].values.ravel()
+    else:
+        y_str = df_label.iloc[:, cfg["label_col"]].values.ravel()
+
+    X = df_expr.values.astype(np.float32)
+    n_sample, n_features = X.shape
+    print(f"  Loaded {dataset_name}: {n_sample} cells x {n_features} genes  "
+          f"({len(np.unique(y_str))} cell types)")
+    return X, y_str, n_sample, n_features
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 2. GAT SUBSAMPLING (Stage 1)
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _build_knn_graph(X, k_neighbors=5):
+    """Construct an adjacency matrix from a KNN graph of *X*."""
+    nn_model = NearestNeighbors(n_neighbors=k_neighbors, algorithm="ball_tree")
+    nn_model.fit(X)
+    _, indices = nn_model.kneighbors(X)
+    adj = torch.zeros((len(X), len(X)), dtype=torch.float32)
+    for i in range(len(X)):
+        adj[i, indices[i]] = 1.0
+    row, col = adj.nonzero().t()
+    return torch.stack([row, col], dim=0)
+
+
+class GATClassifier(nn.Module):
+    """
+    2-layer GAT classifier for node-level cell-type prediction.
+    The *priority_weight* boosts attention toward rare-type cells
+    after the first GAT layer, encouraging the model to attend to them.
+    """
+
+    def __init__(self, num_features, num_classes, priority_weight):
+        super().__init__()
+        self.conv1 = GATConv(num_features, 32, heads=8)
+        self.conv2 = GATConv(32 * 8, num_classes, heads=1)
+        self.priority_weight = priority_weight
+
+    def forward(self, data):
+        x, edge_index, priority_nodes = data.x, data.edge_index, data.priority_nodes
+
+        x, attention1 = self.conv1(x, edge_index, return_attention_weights=True)
+
+        attention = torch.ones(x.size(0), device=x.device)
+        attention[priority_nodes] += self.priority_weight
+        x = x * attention.view(-1, 1)
+        x = torch.relu(x)
+
+        x, attention2 = self.conv2(x, edge_index, return_attention_weights=True)
+        return x, attention1, attention2
+
+
+def gat_subsample(X, y_str, dataset_name, seed=SEED):
+    """
+    Train the GAT classifier and return the indices of the top-k cells
+    ranked by attention weight from the second GAT layer.
+
+    Parameters
+    ----------
+    X : np.ndarray  (n_cells, n_genes)
+    y_str : np.ndarray  (n_cells,) raw string labels
+    dataset_name : str
+    seed : int
+
+    Returns
+    -------
+    top_k_indices : np.ndarray  (k,)
+    k : int
+    Xnew : np.ndarray  (k, n_genes)  the actual feature rows
+    """
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+
+    n_sample = X.shape[0]
+    k = math.ceil(n_sample * GARAGE_DEFAULTS["leakage_fraction"])
+
+    # Encode labels
+    le = LabelEncoder()
+    y_enc = le.fit_transform(y_str)
+
+    # Identify rare cell types (count <= threshold)
+    rare_thresh = DATASET_CONFIG[dataset_name]["rare_threshold"]
+    class_counts = pd.Series(y_str).value_counts()
+    rare_types = class_counts[class_counts <= rare_thresh].index.tolist()
+    rare_mask = pd.Series(y_str).isin(rare_types).values
+    index_list = np.where(rare_mask)[0].tolist()
+    print(f"  Rare types: {rare_types}  ({len(index_list)} cells,  "
+          f"threshold ≤ {rare_thresh})")
+    print(f"  GAT top-k:  k = {k}  ({k / n_sample:.0%} of {n_sample} cells)")
+
+    # Build KNN graph
+    edge_index = _build_knn_graph(X, k_neighbors=5)
+    priority_nodes = torch.tensor(index_list, dtype=torch.long)
+
+    data = Data(
+        x=torch.tensor(X, dtype=torch.float32),
+        edge_index=edge_index,
+        y=torch.tensor(y_enc, dtype=torch.long),
+        priority_nodes=priority_nodes,
+    ).to(DEVICE)
+
+    # Initialise GAT
+    num_features = X.shape[1]
+    num_classes = len(np.unique(y_enc))
+    model = GATClassifier(
+        num_features, num_classes,
+        priority_weight=GARAGE_DEFAULTS["priority_weight"],
+    ).to(DEVICE)
+
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=0.005)
+
+    # Train
+    t0 = time.time()
+    for epoch in range(GARAGE_DEFAULTS["gat_epochs"]):
+        model.train()
+        optimizer.zero_grad()
+        output, a1, a2 = model(data)
+        loss = criterion(output, data.y)
+        loss.backward()
+        optimizer.step()
+        if epoch % 1500 == 0:
+            print(f"    GAT epoch {epoch:5d}  loss={loss.item():.4f}")
+    print(f"  GAT trained in {time.time() - t0:.1f} s")
+
+    # Extract per-cell attention from 2nd GAT layer
+    model.eval()
     with torch.no_grad():
-        g_plot_tensor = generator_pt(Z_batch_gen)
-    
-    g_plot_np = g_plot_tensor.cpu().numpy()
-    
-    # Saving the generated Data
-    # Ensure directory /vol/eph/data/ exists or change path
-    
-    file_dir = "/path/for/the/generated/data/generated_data_0_leak"
-    
-    file_path = file_dir + f"/yan_data_mixdata_iter{i}_top_{k}.csv" 
-    
+        _, _, att2 = model(data)
+        att_coeff = att2[0]              # [heads=1, num_edges]
+        edge_src = edge_index[0]          # source node of each edge
 
-    with open(file_path, "wb") as f:
-        g_plot_pd = pd.DataFrame(g_plot_np)
-        g_plot_pd.columns = g_plot_pd.columns.astype(str)
-        g_plot_pd.to_csv(f)
-    print(f"Saved {file_path}, shape: {g_plot_pd.shape}")
+        att_weights = torch.zeros(n_sample, device=DEVICE)
+        for i in range(n_sample):
+            mask = edge_src == i
+            if mask.any():
+                inc = att_coeff[:, mask].float()
+                att_weights[i] = inc.mean()
 
+    sorted_idx = torch.argsort(att_weights, descending=True)
+    top_k_nodes = sorted_idx[:k].cpu().numpy()
+    Xnew = X[top_k_nodes].astype(np.float32)
 
-
+    print(f"  GAT top-k done:  {len(top_k_nodes)} seeds  "
+          f"(attention range [{att_weights.min():.4f}, {att_weights.max():.4f}])")
+    return top_k_nodes, k, Xnew
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# 3. GAN MODELS (Stage 2)
+# ═══════════════════════════════════════════════════════════════════════════
+
+def sample_Z(m, n):
+    """Uniform noise  U(-1, 1)  of shape (m, n)."""
+    return np.random.uniform(-1.0, 1.0, size=[m, n]).astype(np.float32)
 
 
+class Generator(nn.Module):
+    """Generator: 1024 → 1024 → n_genes, LeakyReLU(0.2), no output activation."""
+
+    def __init__(self, input_dim, output_dim, hsize=(1024, 1024)):
+        super().__init__()
+        self.fc1 = nn.Linear(input_dim, hsize[0])
+        self.fc2 = nn.Linear(hsize[0], hsize[1])
+        self.fc_out = nn.Linear(hsize[1], output_dim)
+        self.leaky_relu = nn.LeakyReLU(0.2)
+
+    def forward(self, z):
+        h = self.leaky_relu(self.fc1(z))
+        h = self.leaky_relu(self.fc2(h))
+        return self.fc_out(h)
+
+
+class Discriminator(nn.Module):
+    """Discriminator: 512 → 256 → n_genes → 1, LeakyReLU(0.2).
+    Returns a (logits, intermediate_representation) tuple."""
+
+    def __init__(self, input_dim, hsize=(512, 256)):
+        super().__init__()
+        self.fc1 = nn.Linear(input_dim, hsize[0])
+        self.fc2 = nn.Linear(hsize[0], hsize[1])
+        self.fc3 = nn.Linear(hsize[1], input_dim)
+        self.fc_out = nn.Linear(input_dim, 1)
+        self.leaky_relu = nn.LeakyReLU(0.2)
+
+    def forward(self, x_in):
+        h = self.leaky_relu(self.fc1(x_in))
+        h = self.leaky_relu(self.fc2(h))
+        h = self.fc3(h)
+        logits = self.fc_out(h)
+        return logits, h
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 4. GAN TRAINING (Stage 2)
+# ═══════════════════════════════════════════════════════════════════════════
+
+def train_gan(x_plot, Xnew, n_features, seed=SEED):
+    """
+    Train the GAN with the GAT-seeded hybrid input.
+
+    The generator's input batch Z_batch is a vertical stack of
+        (random noise) + (GAT-selected seed cells),
+    giving the generator a biological ``anchor'' for rare cell types.
+
+    Parameters
+    ----------
+    x_plot : np.ndarray  (n_cells, n_features)
+    Xnew : np.ndarray  (k, n_features)  GAT-selected seeds
+    n_features : int
+    seed : int
+
+    Returns
+    -------
+    generator : Generator
+    log_records : list of dict  [{iteration, d_loss, g_loss}, ...]
+    """
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+
+    n_sample = x_plot.shape[0]
+    col = n_features
+
+    gen = Generator(col, col, hsize=GARAGE_DEFAULTS["generator_hidden"]).to(DEVICE)
+    disc = Discriminator(col, hsize=GARAGE_DEFAULTS["discriminator_hidden"]).to(DEVICE)
+
+    criterion = nn.BCEWithLogitsLoss()
+    gen_opt = optim.RMSprop(gen.parameters(), lr=GARAGE_DEFAULTS["g_lr"])
+    disc_opt = optim.RMSprop(disc.parameters(), lr=GARAGE_DEFAULTS["d_lr"])
+
+    X_batch = torch.tensor(x_plot, dtype=torch.float32).to(DEVICE)
+    log_records = []
+
+    total_iters = GARAGE_DEFAULTS["gan_total_iters"]
+    nd = GARAGE_DEFAULTS["nd_steps"]
+    ng = GARAGE_DEFAULTS["ng_steps"]
+
+    for i in range(total_iters):
+        row1 = n_sample - Xnew.shape[0]
+        if row1 < 0:
+            row1 = 0
+
+        da1 = sample_Z(row1, col)
+        cur_xn = Xnew if Xnew.ndim == 2 else Xnew.reshape(1, -1)
+        Z_batch_np = np.vstack((da1, cur_xn))
+        Z_batch = torch.tensor(Z_batch_np, dtype=torch.float32).to(DEVICE)
+
+        # --- train Discriminator ---
+        dloss_epoch = 0.0
+        for _ in range(nd):
+            disc_opt.zero_grad()
+            real_out, _ = disc(X_batch)
+            fake_samples = gen(Z_batch).detach()
+            fake_out, _ = disc(fake_samples)
+
+            real_labels = torch.full_like(real_out,
+                                          GARAGE_DEFAULTS["label_smooth_real"]).to(DEVICE)
+            fake_labels = torch.full_like(fake_out,
+                                          GARAGE_DEFAULTS["label_smooth_fake"]).to(DEVICE)
+            disc_loss = criterion(real_out, real_labels) + criterion(fake_out, fake_labels)
+            disc_loss.backward()
+            torch.nn.utils.clip_grad_norm_(disc.parameters(), max_norm=1.0)
+            disc_opt.step()
+            dloss_epoch = disc_loss.item()
+
+        # --- train Generator ---
+        gloss_epoch = 0.0
+        for _ in range(ng):
+            gen_opt.zero_grad()
+            generated_samples = gen(Z_batch)
+            gen_out, _ = disc(generated_samples)
+            gen_loss = criterion(gen_out, torch.ones_like(gen_out).to(DEVICE))
+            gen_loss.backward()
+            torch.nn.utils.clip_grad_norm_(gen.parameters(), max_norm=1.0)
+            gen_opt.step()
+            gloss_epoch = gen_loss.item()
+
+        if i % 1000 == 0:
+            log_records.append({
+                "iteration": i,
+                "d_loss": round(dloss_epoch, 6),
+                "g_loss": round(gloss_epoch, 6),
+            })
+            print(f"    Iter {i:5d}  |  D: {dloss_epoch:.4f}  |  G: {gloss_epoch:.4f}")
+
+    return gen, log_records
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 5. DATA GENERATION
+# ═══════════════════════════════════════════════════════════════════════════
+
+def generate_data(generator, n_sample, n_features, Xnew, out_dir, dataset_name, k):
+    """
+    Generate synthetic data at multiple volume multipliers (0.25x – 1.5x n_sample).
+    Save each batch as a CSV file.
+
+    Parameters
+    ----------
+    generator : Generator
+    n_sample, n_features : int
+    Xnew : np.ndarray  GAT seeds
+    out_dir : str
+    dataset_name : str
+    k : int  (top-k value, used in filename for traceability)
+    """
+    os.makedirs(out_dir, exist_ok=True)
+    batch_sizes_gen = (np.arange(0.25, 1.75, 0.25) * n_sample).astype(int)
+
+    for i, current_batch_size in enumerate(batch_sizes_gen):
+        row1_gen = current_batch_size - Xnew.shape[0]
+        if row1_gen < 0:
+            row1_gen = 0
+
+        da1_gen = sample_Z(row1_gen, n_features)
+        Z_batch_gen_np = np.vstack((da1_gen, Xnew)) if row1_gen > 0 else Xnew
+        Z_batch_gen = torch.tensor(Z_batch_gen_np, dtype=torch.float32).to(DEVICE)
+
+        with torch.no_grad():
+            g_plot_np = generator(Z_batch_gen).cpu().numpy()
+
+        fname = f"{dataset_name}_data_mixdata_iter{i}_top_{k}.csv"
+        fpath = os.path.join(out_dir, fname)
+        pd.DataFrame(g_plot_np).to_csv(fpath, index=False, header=False)
+        print(f"  Saved {fpath}  shape={g_plot_np.shape}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 6. MAIN ORCHESTRATION
+# ═══════════════════════════════════════════════════════════════════════════
+
+def run_garage(dataset_name, out_dir=None, seed=SEED):
+    """
+    Full GARAGE pipeline for a single dataset:
+      (1) GAT subsampling  →  (2) GAN training  →  (3) data generation.
+
+    Parameters
+    ----------
+    dataset_name : str  one of {"yan", "pollen", "cbmc", "muraro"}
+    out_dir : str or None  output directory; defaults to data/gen_data/
+    seed : int
+    """
+    print(f"\n{'=' * 60}")
+    print(f"  GARAGE  —  {dataset_name.upper()}")
+    print(f"{'=' * 60}")
+
+    # 1. Load data
+    X, y_str, n_sample, n_features = load_dataset(dataset_name)
+
+    # 2. GAT subsampling
+    print(f"\n[Stage 1] GAT subsampling ...")
+    top_k_indices, k, Xnew = gat_subsample(X, y_str, dataset_name, seed=seed)
+
+    # 3. GAN training
+    print(f"\n[Stage 2] GAN training ({GARAGE_DEFAULTS['gan_total_iters']} iterations) ...")
+    t0 = time.time()
+    generator, log_records = train_gan(X, Xnew, n_features, seed=seed)
+    print(f"  GAN trained in {time.time() - t0:.0f} s")
+
+    # 4. Generate
+    if out_dir is None:
+        out_dir = os.path.join(DATA_DIR, "gen_data")
+    print(f"\n[Generation] Writing synthetic data to {out_dir}/ ...")
+    generate_data(generator, n_sample, n_features, Xnew, out_dir, dataset_name, k)
+
+    print(f"\n  ✓ GARAGE pipeline complete.")
+    return log_records
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="GARAGE: Graph-Attentive Rare-cell-Aware scRNA-seq data Generation")
+    parser.add_argument("--dataset", type=str, default="muraro",
+                        choices=list(DATASET_CONFIG),
+                        help="Dataset name (default: muraro)")
+    parser.add_argument("--out", type=str, default=None,
+                        help="Output directory for generated CSVs")
+    parser.add_argument("--seed", type=int, default=SEED,
+                        help="Random seed (default: 42)")
+    args = parser.parse_args()
+
+    run_garage(dataset_name=args.dataset,
+               out_dir=args.out,
+               seed=args.seed)
+
+
+if __name__ == "__main__":
+    main()
