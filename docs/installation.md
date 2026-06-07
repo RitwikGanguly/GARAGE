@@ -71,6 +71,16 @@ conda activate venv_benchmarking
 pip install -r requirements_benchmarking.txt
 ```
 
+### Validation dependencies (recommended)
+
+Use the ``scrna`` environment for data validation and biological validation:
+
+```bash
+conda create --name scrna python=3.9.25
+conda activate scrna
+pip install -r requirements_validation.txt
+```
+
 ---
 
 ## Step 4: Verify Installation

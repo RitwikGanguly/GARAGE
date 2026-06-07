@@ -1,23 +1,34 @@
-# GARAGE dependencies  (Python ≥ 3.12)
+# GARAGE + Benchmarking dependencies  (Python 3.12.5)
 #
-# Minimal set required for the core GARAGE pipeline (data_generation/garage.py)
-# plus the data-validation scripts (data_validation/).
+# Core environment for:
+#   - GARAGE pipeline (GAT-based cell selection + GAN-based generation)
+#   - Benchmarking baselines (GAN, WGAN, F-GAN, VAE, LSH-GAN, scGAN,
+#     scVAE, scDiffusion, GAN-ROS, VAE-ROS)
+#   - Ablation studies (leakage fraction, multi-seed synthesis)
+#   - Biological analysis (attention-weight enrichment, rare-cell utility)
 #
+# Conda environment:  ritwik_base
 # Install:  pip install -r requirements_garage.txt
 #
-# For benchmarking (sota + scRNA-seq-specific), also install:
-#   pip install -r requirements_benchmarking.txt
+# For data validation and biological validation, see:
+#   requirements_validation.txt  (Python 3.9.25, conda env: scrna)
 
-numpy>=1.26
-pandas>=2.2
-torch>=2.0
-scikit-learn>=1.5
-pyreadr>=0.5
-scanpy>=1.9
-leidenalg>=0.10
-anndata>=0.10
-matplotlib>=3.9
-seaborn>=0.13
-umap-learn>=0.5
-POT>=0.9
-jupyter>=1.1
+# ── Deep learning ──
+torch==2.7.1
+torch-geometric==2.7.0
+
+# ── Core scientific ──
+numpy==2.4.4
+pandas==2.3.3
+scipy==1.17.1
+scikit-learn==1.8.0
+
+# ── Visualisation ──
+matplotlib==3.10.9
+seaborn==0.13.2
+
+# ── Single-cell ──
+anndata==0.12.16
+
+# ── Graphs & utilities ──
+networkx==3.6.1

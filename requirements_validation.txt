@@ -1,0 +1,36 @@
+# Data Validation + Biological Validation dependencies  (Python 3.9.25)
+#
+# Separate environment for:
+#   - Data validation (feature selection, Leiden clustering, ARI/NMI/F1,
+#     UMAP visualisation, Wasserstein distance)
+#   - Biological validation (marker-gene analysis, rare-cell utility)
+#
+# Conda environment:  scrna
+# Install:  pip install -r requirements_validation.txt
+#
+# For GARAGE model training and benchmarking, see:
+#   requirements_garage.txt  (Python 3.12.5, conda env: ritwik_base)
+
+# ── scRNA-seq analysis ──
+scanpy==1.10.3
+leidenalg==0.12.0
+umap-learn==0.5.12
+
+# ── Optimal transport ──
+POT==0.9.5
+
+# ── Core scientific ──
+numpy==2.0.2
+pandas==2.3.3
+scipy==1.13.1
+scikit-learn==1.6.1
+
+# ── Visualisation ──
+matplotlib==3.9.4
+seaborn==0.13.2
+
+# ── Single-cell ──
+anndata==0.10.9
+
+# ── Graphs & utilities ──
+networkx==3.2.1

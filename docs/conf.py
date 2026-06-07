@@ -30,6 +30,7 @@ exclude_patterns = [
     '_build', 'Thumbs.db', '.DS_Store',
     'ari.md', 'bioinformatics.md', 'feature.md', 'leiden.md',
     'pca.md', 'project_overview.md', 'umap.md',
+    'computational_requirements.md',
 ]
 
 # -- Intersphinx mappings ----------------------------------------------------

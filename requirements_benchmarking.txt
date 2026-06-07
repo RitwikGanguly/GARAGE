@@ -1,19 +1,7 @@
-# Benchmarking dependencies  (Python ≥ 3.10)
+# (Superseded — see requirements_garage.txt and requirements_validation.txt)
 #
-# Additional packages needed to run the baseline generative models
-# in benchmarking/sota/ and benchmarking/scrna_seq_specific/.
+# Benchmarking dependencies are now included in requirements_garage.txt.
+# Data-validation dependencies are in requirements_validation.txt.
 #
-# Install:  pip install -r requirements_benchmarking.txt
-#
-# Note: torch-geometric, torch-scatter, and torch-sparse must be installed
-# from the PyG project wheels (see https://pyg.org/whl/).
-
-numpy>=1.26
-pandas>=2.2
-torch>=2.0
-torch-geometric>=2.5
-torch-scatter>=2.1
-torch-sparse>=0.6
-scikit-learn>=1.5
-scipy>=1.10
-matplotlib>=3.9
+# This file is kept for reference only.  Use requirements_garage.txt for
+# model training and requirements_validation.txt for downstream evaluation.

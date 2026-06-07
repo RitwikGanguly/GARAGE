@@ -65,7 +65,7 @@ python -m data_generation.garage --dataset muraro
 # Run the state-of-the-art benchmarks
 python -m benchmarking.sota.gan --dataset muraro
 
-# Validate generated data
+# Validate generated data (requires separate environment — see requirements_validation.txt)
 python -m data_validation.data_validation \
     --dataset muraro \
     --gen_csv data/gen_data/muraro_data_mixdata_iter3_top_426.csv
@@ -135,8 +135,9 @@ python -m data_validation.data_validation \
 ├── config.py                       Shared paths and hyper‑parameter constants
 ├── CITATION.cff                    Citation metadata
 ├── LICENSE                         MIT License
-├── requirements_garage.txt         Core dependencies (GARAGE pipeline + validation)
-├── requirements_benchmarking.txt   Extra dependencies (benchmarking baselines)
+├── requirements_garage.txt         Core + benchmarking dependencies (Python 3.12.5, env: ritwik_base)
+├── requirements_validation.txt     Data & biological validation dependencies (Python 3.9.25, env: scrna)
+├── requirements_benchmarking.txt   (superseded — see requirements_garage.txt)
 └── README.md
 ```
 
